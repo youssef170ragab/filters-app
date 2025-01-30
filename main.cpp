@@ -1,51 +1,57 @@
-#include <algorithm>
 #include <iostream>
-#include <string>
+#include <fstream>
+#include <cstring>
+#include <cmath>
 #include "bmplib.cpp"
 
-// SIZE = 256
-
+using namespace std;
 unsigned char image[SIZE][SIZE];
 
-// functions
-int loadImage () {
+void loadImage();
+void saveImage();
+void makephotoblackwhite();
+
+int main(){
+    loadImage();
+    makephotoblackwhite();
+    saveImage();
+}
+
+void loadImage(){
     char imageFileName[100];
 
     // Get gray scale image file name
-    cout << "Please enter file name of the image to process: ";
-    
+    cout << "Enter the source image file name: ";
     cin >> imageFileName;
-    
 
     // Add to it .bmp extension and load image
-    strcat (imageFileName, ".bmp");
-    if (readGSBMP(imageFileName, image)==1) {
-        return 0;
-    }
-    return 1;
+    strcat(imageFileName, ".bmp");
+    readGSBMP(imageFileName, image);
 }
 
-void saveImage () {
-
+//_________________________________________
+void saveImage(){
     char imageFileName[100];
-    // Get gray scale image target file name
-    cout << "\nEnter the target image file output name: ";
 
-    cin.ignore();
-    cin.getline(imageFileName,99);
+    // Get gray scale image target file name
+    cout << "Enter the target image file name: ";
+    cin >> imageFileName;
 
     // Add to it .bmp extension and load image
-    strcat (imageFileName, ".bmp");
+    strcat(imageFileName, ".bmp");
     writeGSBMP(imageFileName, image);
 }
 
-
-
-int main(){
-    unsigned char image[SIZE][SIZE];
-    if(readGSBMP("photographer144.bmp", image) == 1){
-        cout << "error";
+//_________________________________________
+void makephotoblackwhite(){
+    for( int i = 0 ; i < SIZE ; i++ ){
+        for( int j = 0 ; j < SIZE ; j++ ){
+            if(image[i][j] <= 126 ){
+                image[i][j]  = 0 ;
+            }
+            else if ( image[i][j] > 126 ){
+                image[i][j] = 255 ;
+            }
+        }
     }
-    
-    writeGSBMP("photographer3.bmp", image);
 }
