@@ -10,18 +10,28 @@ unsigned char image[SIZE][SIZE];
 void loadImage();
 void saveImage();
 void makephotoblackwhite();
+void makephotoinverted() ;
+    int filternumber ;
 
 int main(){
     loadImage();
-    makephotoblackwhite();
+    if ( filternumber == 1 ){
+        makephotoblackwhite();
+    }
+    else if ( filternumber == 2 ){
+        makephotoinverted();
+    }
     saveImage();
 }
 
 void loadImage(){
     char imageFileName[100];
-
     // Get gray scale image file name
-    cout << "Enter the source image file name: ";
+    cout << "ahlan ya user ya habibi :) \nplease Enter file name of the image to process: \n\n";
+    cout << "please select a filter to apply or 0 to exit:\n" ;
+    cout << "1_BLACK & WHITE FILTER\n2_INVERT FILTER\n" ;
+    cout << "please enter the filter number :/" ;
+    cin >> filternumber ;
     cin >> imageFileName;
 
     // Add to it .bmp extension and load image
@@ -42,7 +52,7 @@ void saveImage(){
     writeGSBMP(imageFileName, image);
 }
 
-//_________________________________________
+//________________________________________
 void makephotoblackwhite(){
     for( int i = 0 ; i < SIZE ; i++ ){
         for( int j = 0 ; j < SIZE ; j++ ){
@@ -55,3 +65,16 @@ void makephotoblackwhite(){
         }
     }
 }
+void makephotoinverted(){
+    for( int i = 0 ; i < SIZE ; i++ ){
+        for( int j = 0 ; j < SIZE ; j++ ){
+            if ( image[i][j] <= 126 ){
+                image[i][j] = 255 ;
+            }
+            else if ( image[i][j] > 126 ){
+                image[i][j] = 0 ;
+            }
+         }
+    }
+}
+
