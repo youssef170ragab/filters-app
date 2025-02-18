@@ -8,15 +8,18 @@ using namespace std;
 unsigned char image[SIZE][SIZE];
 unsigned char image2[SIZE][SIZE] ;
 
-void loadimagetwo() ;
+void loadimagetwo();
 void loadImage();
 void saveImage();
 void makephotoblackwhite();
-void makephotoinverted() ;
-void makephotofliped() ;
+void makephotoinverted();
+void makephotofliped();
 void makephotomerge();
 void makephotodarkerorlighter();
-
+void rotatethephoto();
+void makeblur();
+void makeedge();
+void makephotoenlarge();
 int main(){
     while(true){
         loadImage();
@@ -27,6 +30,10 @@ int main(){
         cout << "3- flip image\n" ;
         cout << "4- make merge\n" ;
         cout << "5- make photo darker or lighter\n" ;
+        cout << "6- rotate the photo\n" ;
+        cout << "7- make blur\n" ;
+        cout << "8- make edge\n" ;
+        cout << "9- make photo enlarge\n" ;
         cout << "please enter the filter number :/" ;
         cin >> filternumber ;
         if ( filternumber == 1 ){
@@ -43,6 +50,18 @@ int main(){
         }
         else if ( filternumber == 5 ){
             makephotodarkerorlighter();
+        }
+        else if ( filternumber == 6 ){
+            rotatethephoto(); 
+        }
+        else if ( filternumber == 7 ){
+            makeblur() ;
+        }
+        else if( filternumber == 8 ){
+            makeedge();
+        }
+        else if ( filternumber == 9 ){
+            makephotoenlarge() ;
         }
 
         saveImage();
@@ -143,7 +162,7 @@ void makephotofliped(){
         for ( int i = 0 ; i < SIZE ; i++ ){
             for ( int j = 0 ; j < SIZE ; j++ ){
                 if ( j < 126){
-                image [i][j] = image[i][255-j] ;
+                image[i][j] = image[i][255-j] ;
                 }
                 if ( j > 126 ){
                     image[i][j] = image2[i][255-j] ;
@@ -177,6 +196,125 @@ void makephotodarkerorlighter(){
             else if ( x == 2 ){
                 image[i][j] =  (image[i][j]) / 2 ;
             }
+        }
+    }
+}
+void rotatethephoto(){
+    cout << "please choose the rotate degree 90 / 180 / 270\n" ;
+    int x ;
+    cin >> x ;
+    for ( int i = 0 ; i < SIZE ; i++ ){
+        for ( int j = 0 ; j < SIZE ; j++ ){
+            image2[i][j] = image[i][j] ;
+        }
+    }
+    if ( x == 180 ){
+        for ( int i = 0 ; i < SIZE ; i++ ){
+            for( int j = 0 ; j <SIZE ; j++ ){
+                if ( i <= 126){
+                    image[i][j] = image[255-i][255-j] ;
+                }
+                if ( i > 126 ){
+                    image[i][j] = image2[255-i][255-j] ;
+                }
+            }
+        }
+    }
+    if ( x == 90 ){
+        for ( int i = 0 ; i < SIZE ; i++ ){
+            for ( int j = 0 ; j < SIZE ; j++ ){
+                image[i][j] = image[255-j][i] ;
+                image[i][j] = image2[255-j][i] ;
+            }
+        }
+    }
+
+    if ( x == 270 ){
+        for( int i = 0 ; i < SIZE ; i++ ){
+            for ( int j = 0 ; j < SIZE ; j++ ){
+                image[i][j]= image[j][255-i] ;
+                image[i][j] = image2[j][255-i] ;
+            }
+        }
+    }
+}
+
+void makeblur(){
+        for ( int i = 0 ; i < SIZE ; i++ ){
+            for(int j = 0 ; j < SIZE ; j ++  ){
+                if( i > 0 && i < 255 && j > 0 && j < 255 ){
+                    image[i][j] = ( (image[i][j] + image[i-1][j] + image[i-1][j-1] + image[i-1][j+1] + image[i][j-1] + image[i+1][j] + image[i+1][j+1] + image[i+1][j-1] + image[i][j+1] ) /9 ) ;
+                }
+            }
+        }
+}
+
+
+void makeedge(){
+    makephotoblackwhite() ;
+    for( int i = 0 ; i < SIZE ; i++ ){
+        for(int j = 0 ; j < SIZE ; j++ ){
+            image2[i][j] = image[i][j] ;
+        }
+    }
+
+    for ( int i = 0 ; i < SIZE ; i++ ){
+        for ( int j = 0 ; j < SIZE ; j++ ){
+            if (image2 [i][j] == 0 ){
+                if ( image2[i][j+1] == 255 || image2[i+1][j] == 255 || image2[i][j-1] == 255 || image2[i-1][j] == 255){
+                    image[i][j] = 0 ;
+                }
+                else {
+                    image[i][j] = 255 ;
+                }
+            }
+        }
+    }
+}
+
+void makephotoenlarge(){
+    int x ;
+    cout << " please selcet the part that you want to enlarge \n" ;
+    cin >> x ;
+    for( int i = 0 ; i < SIZE ; i++ ){
+        for( int j = 0 ; j < SIZE ; j++ ){
+            image2[i][j] = image[i][j] ;
+        }
+    }
+    int startrow , startcol;
+    int endrow , endcol ;
+
+    if(  x == 1 ){
+        startrow = 0 ;
+        endrow = 128 ;
+        startcol = 0 ;
+        endcol = 128 ;
+    }
+    if(  x == 2 ){
+        startrow = 0 ;
+        endrow = 128 ;
+        startcol = 128 ;
+        endcol = 255 ;
+    }
+    if(  x == 3 ){
+        startrow = 128 ;
+        endrow = 255 ;
+        startcol = 0 ;
+        endcol = 128 ;
+    }
+    if(  x == 4 ){
+        startrow = 128 ;
+        endrow = 255 ;
+        startcol = 128 ;
+        endcol = 255 ;
+    }
+
+    for ( int i = startrow ; i < endrow ; i++ ){
+        for ( int j = startcol ; j < endcol ; j++ ){
+            image[i*2] [j*2] = image2[i][j] ;
+            image[(i*2)] [( j * 2 ) + 1] = image2[i][j] ;
+            image[(i*2) + 1 ] [(j * 2)] = image2[i][j] ;
+            image[(i*2) + 1 ] [( j * 2 ) + 1] = image2[i][j] ;
         }
     }
 }
